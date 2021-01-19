@@ -1,4 +1,5 @@
-import { createElement, useMemo } from 'react';
+import { createElement } from 'preact';
+import { useMemo } from 'preact/hooks';
 import { I18nContext } from './context';
 
 export function I18nextProvider({ i18n, defaultNS, children }) {

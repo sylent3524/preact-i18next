@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext } from 'preact/hooks';
 import i18next from 'i18next';
 import { I18nContext } from 'react-i18next';
 

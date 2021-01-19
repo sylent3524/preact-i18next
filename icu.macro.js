@@ -8,11 +8,11 @@ function ICUMacro({ references, state, babel }) {
   const t = babel.types;
   const { Trans = [], Plural = [], Select = [], SelectOrdinal = [] } = references;
 
-  // assert we have the react-i18next Trans component imported
+  // assert we have the preact-i18next Trans component imported
   addNeededImports(state, babel);
 
   // transform Plural and SelectOrdinal
-  [...Plural, ...SelectOrdinal].forEach(referencePath => {
+  [...Plural, ...SelectOrdinal].forEach((referencePath) => {
     if (referencePath.parentPath.type === 'JSXOpeningElement') {
       pluralAsJSX(
         referencePath.parentPath,
@@ -28,7 +28,7 @@ function ICUMacro({ references, state, babel }) {
   });
 
   // transform Select
-  Select.forEach(referencePath => {
+  Select.forEach((referencePath) => {
     if (referencePath.parentPath.type === 'JSXOpeningElement') {
       selectAsJSX(
         referencePath.parentPath,
@@ -44,7 +44,7 @@ function ICUMacro({ references, state, babel }) {
   });
 
   // transform Trans
-  Trans.forEach(referencePath => {
+  Trans.forEach((referencePath) => {
     if (referencePath.parentPath.type === 'JSXOpeningElement') {
       transAsJSX(
         referencePath.parentPath,
@@ -198,7 +198,7 @@ function transAsJSX(parentPath, { attributes, children }, babel, { filename }) {
   let clonedAttributes = cloneExistingAttributes(attributes);
   if (parseDefaults) {
     // remove existing defaults so it can be replaced later with the new parsed defaults
-    clonedAttributes = clonedAttributes.filter(node => node.name.name !== 'defaults');
+    clonedAttributes = clonedAttributes.filter((node) => node.name.name !== 'defaults');
   }
 
   // replace the node with the new Trans
@@ -253,7 +253,7 @@ function cloneExistingAttributes(attributes) {
 }
 
 function findAttribute(name, attributes) {
-  return attributes.find(child => {
+  return attributes.find((child) => {
     const ele = child.node ? child.node : child;
     return ele.name.name === name;
   });
@@ -375,17 +375,18 @@ function addNeededImports(state, babel) {
   const t = babel.types;
   const importsToAdd = ['Trans'];
 
-  // check if there is an existing react-i18next import
+  // check if there is an existing preact-i18next import
   const existingImport = state.file.path.node.body.find(
-    importNode => t.isImportDeclaration(importNode) && importNode.source.value === 'react-i18next',
+    (importNode) =>
+      t.isImportDeclaration(importNode) && importNode.source.value === 'preact-i18next',
   );
 
-  // append Trans to existing or add a new react-i18next import for the Trans
+  // append Trans to existing or add a new preact-i18next import for the Trans
   if (existingImport) {
-    importsToAdd.forEach(name => {
+    importsToAdd.forEach((name) => {
       if (
         existingImport.specifiers.findIndex(
-          specifier => specifier.imported && specifier.imported.name === name,
+          (specifier) => specifier.imported && specifier.imported.name === name,
         ) === -1
       ) {
         existingImport.specifiers.push(t.importSpecifier(t.identifier(name), t.identifier(name)));
@@ -394,8 +395,8 @@ function addNeededImports(state, babel) {
   } else {
     state.file.path.node.body.unshift(
       t.importDeclaration(
-        importsToAdd.map(name => t.importSpecifier(t.identifier(name), t.identifier(name))),
-        t.stringLiteral('react-i18next'),
+        importsToAdd.map((name) => t.importSpecifier(t.identifier(name), t.identifier(name))),
+        t.stringLiteral('preact-i18next'),
       ),
     );
   }

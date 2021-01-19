@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef } from 'preact/hooks';
 import { getI18n, getDefaults, ReportNamespaces, I18nContext } from './context';
 import { warnOnce, loadNamespaces, hasLoadedNamespace } from './utils';
 
@@ -10,7 +10,7 @@ export function useTranslation(ns, props = {}) {
   if (i18n && !i18n.reportNamespaces) i18n.reportNamespaces = new ReportNamespaces();
   if (!i18n) {
     warnOnce('You will need to pass in an i18next instance by using initReactI18next');
-    const notReadyT = k => (Array.isArray(k) ? k[k.length - 1] : k);
+    const notReadyT = (k) => (Array.isArray(k) ? k[k.length - 1] : k);
     const retNotReady = [notReadyT, {}, false];
     retNotReady.t = notReadyT;
     retNotReady.i18n = {};
@@ -31,7 +31,7 @@ export function useTranslation(ns, props = {}) {
   // are we ready? yes if all namespaces in first language are loaded already (either with data or empty object on failed load)
   const ready =
     (i18n.isInitialized || i18n.initializedStoreOnce) &&
-    namespaces.every(n => hasLoadedNamespace(n, i18n, i18nOptions));
+    namespaces.every((n) => hasLoadedNamespace(n, i18n, i18nOptions));
 
   // binding t function to namespace (acts also as rerender trigger)
   function getT() {
@@ -65,9 +65,9 @@ export function useTranslation(ns, props = {}) {
     // unbinding on unmount
     return () => {
       isMounted.current = false;
-      if (bindI18n && i18n) bindI18n.split(' ').forEach(e => i18n.off(e, boundReset));
+      if (bindI18n && i18n) bindI18n.split(' ').forEach((e) => i18n.off(e, boundReset));
       if (bindI18nStore && i18n)
-        bindI18nStore.split(' ').forEach(e => i18n.store.off(e, boundReset));
+        bindI18nStore.split(' ').forEach((e) => i18n.store.off(e, boundReset));
     };
   }, [namespaces.join()]); // re-run effect whenever list of namespaces changes
 
@@ -83,7 +83,7 @@ export function useTranslation(ns, props = {}) {
   if (!ready && !useSuspense) return ret;
 
   // not yet loaded namespaces -> load them -> and trigger suspense
-  throw new Promise(resolve => {
+  throw new Promise((resolve) => {
     loadNamespaces(i18n, namespaces, () => {
       resolve();
     });

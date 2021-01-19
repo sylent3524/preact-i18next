@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/preact-hooks';
 import i18n from './i18n';
 import BackendMock from './backendMock';
 import { useTranslation } from '../src/useTranslation';

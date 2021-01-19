@@ -20,7 +20,7 @@ exclude_paths:
 - coverage/
 - dist/
 - example/
-- "react-i18next.js"
-- "react-i18next.min.js"
+- "preact-i18next.js"
+- "preact-i18next.min.js"
 - "rollup.config.js"
 - "src/shallowEqual.js"

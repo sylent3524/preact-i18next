@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'preact';
 import { Translation } from 'react-i18next';
 
 function basic() {

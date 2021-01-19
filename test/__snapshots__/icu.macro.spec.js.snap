@@ -319,7 +319,7 @@ const x = <Trans i18nKey=\\"testKey\\" defaults=\\"{position, selectordinal,  on
 
 exports[`macros 19. macros: 19. macros 1`] = `
 "
-import React from 'react'
+import React from 'preact'
 import { useTranslation } from 'react-i18next'
 import { Plural, Select, SelectOrdinal, Trans } from '../icu.macro'
 const Link = ({to, children}) => (<a href={to}>{children}</a>)
@@ -428,7 +428,7 @@ export default function TestPage({count = 1}) {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import React from 'react';
+import React from 'preact';
 import { useTranslation, Trans } from 'react-i18next';
 
 const Link = ({

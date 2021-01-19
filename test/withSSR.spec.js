@@ -1,5 +1,5 @@
-import React from 'react';
-import { render } from '@testing-library/react';
+import React from 'preact';
+import { render } from '@testing-library/preact';
 import i18n from './i18n';
 import { setI18n } from '../src/context';
 import { withSSR } from '../src/withSSR';
@@ -22,10 +22,10 @@ const mockI18n = {
     backendConnector: {},
   },
   isInitialized: true,
-  changeLanguage: lng => {
+  changeLanguage: (lng) => {
     mockI18n.language = lng;
   },
-  getFixedT: () => message => message,
+  getFixedT: () => (message) => message,
   hasResourceBundle: (lng, ns) => ns === 'alreadyLoadedNS',
   getResourceBundle: (lng, ns) => ({ lng, ns }),
   loadNamespaces: () => {},

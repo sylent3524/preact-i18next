@@ -1,5 +1,6 @@
 import i18next from 'i18next';
-import * as React from 'react';
+import * as React from 'preact';
+import { Suspense } from 'preact/compat';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 
 i18next.use(initReactI18next).init({
@@ -22,20 +23,20 @@ i18next.use(initReactI18next).init({
 
 function test() {
   return (
-    <React.Suspense fallback={<p>Loading</p>}>
+    <Suspense fallback={<p>Loading</p>}>
       <I18nextProvider i18n={i18next}>
         <h1>Foo</h1>
       </I18nextProvider>
-    </React.Suspense>
+    </Suspense>
   );
 }
 
 function testDefaultNS() {
   return (
-    <React.Suspense fallback={<p>Loading</p>}>
+    <Suspense fallback={<p>Loading</p>}>
       <I18nextProvider i18n={i18next} defaultNS={'translations'}>
         <h1>Foo</h1>
       </I18nextProvider>
-    </React.Suspense>
+    </Suspense>
   );
 }

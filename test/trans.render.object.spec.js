@@ -1,5 +1,5 @@
-import React from 'react';
-import { render } from '@testing-library/react';
+import React from 'preact';
+import { render } from '@testing-library/preact';
 import './i18n';
 import { Trans } from '../src/Trans';
 

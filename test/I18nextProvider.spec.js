@@ -1,5 +1,5 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import React from 'preact';
+import { render, screen } from '@testing-library/preact';
 import { I18nextProvider } from '../src/I18nextProvider';
 import { useTranslation } from '../src/useTranslation';
 
@@ -17,7 +17,7 @@ const instance = {
   },
   isInitialized: true,
   changeLanguage: () => {},
-  getFixedT: () => message => message,
+  getFixedT: () => (message) => message,
   hasResourceBundle: (lng, ns) => ns === 'translation',
   loadNamespaces: () => {},
   on: () => {},

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'preact';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { default as myI18n } from './i18n';
 

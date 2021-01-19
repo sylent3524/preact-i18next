@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext } from 'preact/hooks';
 import { getI18n, I18nContext } from './context';
 
 export function useSSR(initialI18nStore, initialLanguage, props = {}) {
@@ -16,7 +16,7 @@ export function useSSR(initialI18nStore, initialLanguage, props = {}) {
 
     // add namespaces to the config - so a languageChange call loads all namespaces needed
     i18n.options.ns = Object.values(initialI18nStore).reduce((mem, lngResources) => {
-      Object.keys(lngResources).forEach(ns => {
+      Object.keys(lngResources).forEach((ns) => {
         if (mem.indexOf(ns) < 0) mem.push(ns);
       });
       return mem;

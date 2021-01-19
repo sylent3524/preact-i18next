@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'preact';
 import { Trans, useTranslation } from 'react-i18next';
 
 function basic() {
@@ -71,7 +71,7 @@ function t() {
   return <Trans t={t}>Foo</Trans>;
 }
 
-function CustomRedComponent(props: { children: React.ReactNode }) {
+function CustomRedComponent(props: { children: React.ComponentChildren }) {
   return <div style={{ color: 'red' }}>{props.children}</div>;
 }
 

@@ -156,7 +156,7 @@ pluginTester({
     `,
 
     `
-      import React from 'react'
+      import React from 'preact'
       import { useTranslation } from 'react-i18next'
       import { Plural, Select, SelectOrdinal, Trans } from '../icu.macro'
       const Link = ({to, children}) => (<a href={to}>{children}</a>)

@@ -1,10 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'react'], factory) :
-  (global = global || self, factory(global.ReactI18next = {}, global.React));
-}(this, function (exports, React) { 'use strict';
-
-  var React__default = 'default' in React ? React['default'] : React;
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('preact')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'preact'], factory) :
+  (global = global || self, factory(global.PreactI18next = {}, global.preact));
+}(this, function (exports, preact) { 'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
@@ -183,6 +181,386 @@
 
   function _nonIterableRest() {
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var t,
+      u,
+      r,
+      o = 0,
+      i = [],
+      c = preact.options.__b,
+      f = preact.options.__r,
+      e = preact.options.diffed,
+      a = preact.options.__c,
+      v = preact.options.unmount;
+
+  function m(t, r) {
+    preact.options.__h && preact.options.__h(u, t, o || r), o = 0;
+    var i = u.__H || (u.__H = {
+      __: [],
+      __h: []
+    });
+    return t >= i.__.length && i.__.push({}), i.__[t];
+  }
+
+  function l(n) {
+    return o = 1, p(w, n);
+  }
+
+  function p(n, r, o) {
+    var i = m(t++, 2);
+    return i.t = n, i.__c || (i.__ = [o ? o(r) : w(void 0, r), function (n) {
+      var t = i.t(i.__[0], n);
+      i.__[0] !== t && (i.__ = [t, i.__[1]], i.__c.setState({}));
+    }], i.__c = u), i.__;
+  }
+
+  function y(r, o) {
+    var i = m(t++, 3);
+    !preact.options.__s && k(i.__H, o) && (i.__ = r, i.__H = o, u.__H.__h.push(i));
+  }
+
+  function s(n) {
+    return o = 5, d(function () {
+      return {
+        current: n
+      };
+    }, []);
+  }
+
+  function d(n, u) {
+    var r = m(t++, 7);
+    return k(r.__H, u) && (r.__ = n(), r.__H = u, r.__h = n), r.__;
+  }
+
+  function F(n) {
+    var r = u.context[n.__c],
+        o = m(t++, 9);
+    return o.__c = n, r ? (null == o.__ && (o.__ = !0, r.sub(u)), r.props.value) : n.__;
+  }
+
+  function x() {
+    i.forEach(function (t) {
+      if (t.__P) try {
+        t.__H.__h.forEach(g), t.__H.__h.forEach(j), t.__H.__h = [];
+      } catch (u) {
+        t.__H.__h = [], preact.options.__e(u, t.__v);
+      }
+    }), i = [];
+  }
+
+  preact.options.__b = function (n) {
+    u = null, c && c(n);
+  }, preact.options.__r = function (n) {
+    f && f(n), t = 0;
+    var r = (u = n.__c).__H;
+    r && (r.__h.forEach(g), r.__h.forEach(j), r.__h = []);
+  }, preact.options.diffed = function (t) {
+    e && e(t);
+    var o = t.__c;
+    o && o.__H && o.__H.__h.length && (1 !== i.push(o) && r === preact.options.requestAnimationFrame || ((r = preact.options.requestAnimationFrame) || function (n) {
+      var t,
+          u = function u() {
+        clearTimeout(r), b && cancelAnimationFrame(t), setTimeout(n);
+      },
+          r = setTimeout(u, 100);
+
+      b && (t = requestAnimationFrame(u));
+    })(x)), u = void 0;
+  }, preact.options.__c = function (t, u) {
+    u.some(function (t) {
+      try {
+        t.__h.forEach(g), t.__h = t.__h.filter(function (n) {
+          return !n.__ || j(n);
+        });
+      } catch (r) {
+        u.some(function (n) {
+          n.__h && (n.__h = []);
+        }), u = [], preact.options.__e(r, t.__v);
+      }
+    }), a && a(t, u);
+  }, preact.options.unmount = function (t) {
+    v && v(t);
+    var u = t.__c;
+    if (u && u.__H) try {
+      u.__H.__.forEach(g);
+    } catch (t) {
+      preact.options.__e(t, u.__v);
+    }
+  };
+  var b = "function" == typeof requestAnimationFrame;
+
+  function g(n) {
+    var t = u;
+    "function" == typeof n.__c && n.__c(), u = t;
+  }
+
+  function j(n) {
+    var t = u;
+    n.__c = n.__(), u = t;
+  }
+
+  function k(n, t) {
+    return !n || n.length !== t.length || t.some(function (t, u) {
+      return t !== n[u];
+    });
+  }
+
+  function w(n, t) {
+    return "function" == typeof t ? t(n) : t;
+  }
+
+  function C(n, t) {
+    for (var e in t) {
+      n[e] = t[e];
+    }
+
+    return n;
+  }
+
+  function S(n, t) {
+    for (var e in n) {
+      if ("__source" !== e && !(e in t)) return !0;
+    }
+
+    for (var r in t) {
+      if ("__source" !== r && n[r] !== t[r]) return !0;
+    }
+
+    return !1;
+  }
+
+  function E(n) {
+    this.props = n;
+  }
+
+  (E.prototype = new preact.Component()).isPureReactComponent = !0, E.prototype.shouldComponentUpdate = function (n, t) {
+    return S(this.props, n) || S(this.state, t);
+  };
+  var w$1 = preact.options.__b;
+
+  preact.options.__b = function (n) {
+    n.type && n.type.__f && n.ref && (n.props.ref = n.ref, n.ref = null), w$1 && w$1(n);
+  };
+
+  var R = "undefined" != typeof Symbol && Symbol.for && Symbol.for("react.forward_ref") || 3911;
+
+  function x$1(n) {
+    function t(t, e) {
+      var r = C({}, t);
+      return delete r.ref, n(r, (e = t.ref || e) && ("object" != _typeof(e) || "current" in e) ? e : null);
+    }
+
+    return t.$$typeof = R, t.render = t, t.prototype.isReactComponent = t.__f = !0, t.displayName = "ForwardRef(" + (n.displayName || n.name) + ")", t;
+  }
+
+  var A = preact.options.__e;
+
+  function O() {
+    this.__u = 0, this.t = null, this.__b = null;
+  }
+
+  function L(n) {
+    var t = n.__.__c;
+    return t && t.__e && t.__e(n);
+  }
+
+  function D() {
+    this.o = null, this.u = null;
+  }
+
+  preact.options.__e = function (n, t, e) {
+    if (n.then) for (var r, o = t; o = o.__;) {
+      if ((r = o.__c) && r.__c) return null == t.__e && (t.__e = e.__e, t.__k = e.__k), r.__c(n, t);
+    }
+    A(n, t, e);
+  }, (O.prototype = new preact.Component()).__c = function (n, t) {
+    var e = t.__c,
+        r = this;
+    null == r.t && (r.t = []), r.t.push(e);
+
+    var o = L(r.__v),
+        u = !1,
+        i = function i() {
+      u || (u = !0, e.componentWillUnmount = e.__c, o ? o(f) : f());
+    };
+
+    e.__c = e.componentWillUnmount, e.componentWillUnmount = function () {
+      i(), e.__c && e.__c();
+    };
+
+    var f = function f() {
+      if (! --r.__u) {
+        if (r.state.__e) {
+          var n = r.state.__e;
+
+          r.__v.__k[0] = function n(t, e, r) {
+            return t && (t.__v = null, t.__k = t.__k && t.__k.map(function (t) {
+              return n(t, e, r);
+            }), t.__c && t.__c.__P === e && (t.__e && r.insertBefore(t.__e, t.__d), t.__c.__e = !0, t.__c.__P = r)), t;
+          }(n, n.__c.__P, n.__c.__O);
+        }
+
+        var t;
+
+        for (r.setState({
+          __e: r.__b = null
+        }); t = r.t.pop();) {
+          t.forceUpdate();
+        }
+      }
+    },
+        c = !0 === t.__h;
+
+    r.__u++ || c || r.setState({
+      __e: r.__b = r.__v.__k[0]
+    }), n.then(i, i);
+  }, O.prototype.componentWillUnmount = function () {
+    this.t = [];
+  }, O.prototype.render = function (n, t) {
+    if (this.__b) {
+      if (this.__v.__k) {
+        var e = document.createElement("div"),
+            r = this.__v.__k[0].__c;
+
+        this.__v.__k[0] = function n(t, e, r) {
+          return t && (t.__c && t.__c.__H && (t.__c.__H.__.forEach(function (n) {
+            "function" == typeof n.__c && n.__c();
+          }), t.__c.__H = null), null != (t = C({}, t)).__c && (t.__c.__P === r && (t.__c.__P = e), t.__c = null), t.__k = t.__k && t.__k.map(function (t) {
+            return n(t, e, r);
+          })), t;
+        }(this.__b, e, r.__O = r.__P);
+      }
+
+      this.__b = null;
+    }
+
+    var o = t.__e && preact.createElement(preact.Fragment, null, n.fallback);
+    return o && (o.__h = null), [preact.createElement(preact.Fragment, null, t.__e ? null : n.children), o];
+  };
+
+  var F$1 = function F(n, t, e) {
+    if (++e[1] === e[0] && n.u.delete(t), n.props.revealOrder && ("t" !== n.props.revealOrder[0] || !n.u.size)) for (e = n.o; e;) {
+      for (; e.length > 3;) {
+        e.pop()();
+      }
+
+      if (e[1] < e[0]) break;
+      n.o = e = e[2];
+    }
+  };
+
+  (D.prototype = new preact.Component()).__e = function (n) {
+    var t = this,
+        e = L(t.__v),
+        r = t.u.get(n);
+    return r[0]++, function (o) {
+      var u = function u() {
+        t.props.revealOrder ? (r.push(o), F$1(t, n, r)) : o();
+      };
+
+      e ? e(u) : u();
+    };
+  }, D.prototype.render = function (n) {
+    this.o = null, this.u = new Map();
+    var t = preact.toChildArray(n.children);
+    n.revealOrder && "b" === n.revealOrder[0] && t.reverse();
+
+    for (var e = t.length; e--;) {
+      this.u.set(t[e], this.o = [1, 0, this.o]);
+    }
+
+    return n.children;
+  }, D.prototype.componentDidUpdate = D.prototype.componentDidMount = function () {
+    var n = this;
+    this.u.forEach(function (t, e) {
+      F$1(n, e, t);
+    });
+  };
+
+  var I = "undefined" != typeof Symbol && Symbol.for && Symbol.for("react.element") || 60103,
+      W = /^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|fill|flood|font|glyph(?!R)|horiz|marker(?!H|W|U)|overline|paint|stop|strikethrough|stroke|text(?!L)|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/,
+      P = function P(n) {
+    return ("undefined" != typeof Symbol && "symbol" == _typeof(Symbol()) ? /fil|che|rad/i : /fil|che|ra/i).test(n);
+  };
+
+  preact.Component.prototype.isReactComponent = {}, ["componentWillMount", "componentWillReceiveProps", "componentWillUpdate"].forEach(function (n) {
+    Object.defineProperty(preact.Component.prototype, n, {
+      configurable: !0,
+      get: function get() {
+        return this["UNSAFE_" + n];
+      },
+      set: function set(t) {
+        Object.defineProperty(this, n, {
+          configurable: !0,
+          writable: !0,
+          value: t
+        });
+      }
+    });
+  });
+  var V = preact.options.event;
+
+  function H() {}
+
+  function Z() {
+    return this.cancelBubble;
+  }
+
+  function Y() {
+    return this.defaultPrevented;
+  }
+
+  preact.options.event = function (n) {
+    return V && (n = V(n)), n.persist = H, n.isPropagationStopped = Z, n.isDefaultPrevented = Y, n.nativeEvent = n;
+  };
+
+  var $,
+      q = {
+    configurable: !0,
+    get: function get() {
+      return this.class;
+    }
+  },
+      G = preact.options.vnode;
+
+  preact.options.vnode = function (n) {
+    var t = n.type,
+        e = n.props,
+        r = e;
+
+    if ("string" == typeof t) {
+      for (var o in r = {}, e) {
+        var u = e[o];
+        "defaultValue" === o && "value" in e && null == e.value ? o = "value" : "download" === o && !0 === u ? u = "" : /ondoubleclick/i.test(o) ? o = "ondblclick" : /^onchange(textarea|input)/i.test(o + t) && !P(e.type) ? o = "oninput" : /^on(Ani|Tra|Tou|BeforeInp)/.test(o) ? o = o.toLowerCase() : W.test(o) ? o = o.replace(/[A-Z0-9]/, "-$&").toLowerCase() : null === u && (u = void 0), r[o] = u;
+      }
+
+      "select" == t && r.multiple && Array.isArray(r.value) && (r.value = preact.toChildArray(e.children).forEach(function (n) {
+        n.props.selected = -1 != r.value.indexOf(n.props.value);
+      })), "select" == t && null != r.defaultValue && (r.value = preact.toChildArray(e.children).forEach(function (n) {
+        n.props.selected = r.multiple ? -1 != r.defaultValue.indexOf(n.props.value) : r.defaultValue == n.props.value;
+      })), n.props = r;
+    }
+
+    t && e.class != e.className && (q.enumerable = "className" in e, null != e.className && (r.class = e.className), Object.defineProperty(r, "className", q)), n.$$typeof = I, G && G(n);
+  };
+
+  var J = preact.options.__r;
+
+  preact.options.__r = function (n) {
+    J && J(n), $ = n.__c;
+  };
+
+  var on = "object" == (typeof performance === "undefined" ? "undefined" : _typeof(performance)) && "function" == typeof performance.now ? performance.now.bind(performance) : function () {
+    return Date.now();
+  };
+
+  function cn(n) {
+    return !!n && n.$$typeof === I;
+  }
+
+  function ln(n) {
+    return cn(n) ? preact.cloneElement.apply(null, arguments) : n;
   }
 
   var voidElements = {
@@ -394,7 +772,7 @@
     useSuspense: true
   };
   var i18nInstance;
-  var I18nContext = React__default.createContext();
+  var I18nContext = preact.createContext();
   function setDefaults() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     defaultOptions = _objectSpread2(_objectSpread2({}, defaultOptions), options);
@@ -553,7 +931,7 @@
   function hasValidReactChildren(children) {
     if (Object.prototype.toString.call(children) !== '[object Array]') return false;
     return children.every(function (child) {
-      return React__default.isValidElement(child);
+      return cn(child);
     });
   }
 
@@ -576,7 +954,7 @@
     childrenArray.forEach(function (child, childIndex) {
       if (typeof child === 'string') {
         stringNode += "".concat(child);
-      } else if (React__default.isValidElement(child)) {
+      } else if (cn(child)) {
         var childPropsCount = Object.keys(child.props).length;
         var shouldKeepChild = keepArray.indexOf(child.type) > -1;
         var childChildren = child.props.children;
@@ -623,7 +1001,7 @@
       var childrenArray = getAsArray(childs);
       childrenArray.forEach(function (child) {
         if (typeof child === 'string') return;
-        if (hasChildren(child)) getData(getChildren(child));else if (_typeof(child) === 'object' && !React__default.isValidElement(child)) Object.assign(data, child);
+        if (hasChildren(child)) getData(getChildren(child));else if (_typeof(child) === 'object' && !cn(child)) Object.assign(data, child);
       });
     }
 
@@ -639,7 +1017,7 @@
 
     function pushTranslatedJSX(child, inner, mem, i, isVoid) {
       if (child.dummy) child.children = inner;
-      mem.push(React__default.cloneElement(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
+      mem.push(ln(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
         key: i
       }), isVoid ? undefined : inner));
     }
@@ -657,7 +1035,7 @@
           var child = Object.keys(node.attrs).length !== 0 ? mergeProps({
             props: node.attrs
           }, tmp) : tmp;
-          var isElement = React__default.isValidElement(child);
+          var isElement = cn(child);
           var isValidTranslationWithChildren = isElement && hasChildren(node, true) && !node.voidElement;
           var isEmptyTransWithHTML = emptyChildrenButNeedsHandling && _typeof(child) === 'object' && child.dummy && !isElement;
           var isKnownComponent = _typeof(children) === 'object' && children !== null && Object.hasOwnProperty.call(children, node.name);
@@ -670,7 +1048,7 @@
             } else if (isEmptyTransWithHTML) {
             var _inner = mapAST(reactNodes, node.children, rootReactNode);
 
-            mem.push(React__default.cloneElement(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
+            mem.push(ln(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
               key: i
             }), _inner));
           } else if (Number.isNaN(parseFloat(node.name))) {
@@ -680,13 +1058,13 @@
               pushTranslatedJSX(child, _inner2, mem, i, node.voidElement);
             } else if (i18nOptions.transSupportBasicHtmlNodes && keepArray.indexOf(node.name) > -1) {
               if (node.voidElement) {
-                mem.push(React__default.createElement(node.name, {
+                mem.push(preact.createElement(node.name, {
                   key: "".concat(node.name, "-").concat(i)
                 }));
               } else {
                 var _inner3 = mapAST(reactNodes, node.children, rootReactNode);
 
-                mem.push(React__default.createElement(node.name, {
+                mem.push(preact.createElement(node.name, {
                   key: "".concat(node.name, "-").concat(i)
                 }, _inner3));
               }
@@ -701,11 +1079,11 @@
             var content = node.children[0] ? translationContent : null;
             if (content) mem.push(content);
           } else if (node.children.length === 1 && translationContent) {
-            mem.push(React__default.cloneElement(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
+            mem.push(ln(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
               key: i
             }), translationContent));
           } else {
-            mem.push(React__default.cloneElement(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
+            mem.push(ln(child, _objectSpread2(_objectSpread2({}, child.props), {}, {
               key: i
             })));
           }
@@ -739,7 +1117,7 @@
         tFromProps = _ref.t,
         additionalProps = _objectWithoutProperties(_ref, ["children", "count", "parent", "i18nKey", "tOptions", "values", "defaults", "components", "ns", "i18n", "t"]);
 
-    var _ref2 = React.useContext(I18nContext) || {},
+    var _ref2 = F(I18nContext) || {},
         i18nFromContext = _ref2.i18n,
         defaultNSFromContext = _ref2.defaultNS;
 
@@ -778,14 +1156,14 @@
     var translation = key ? t(key, combinedTOpts) : defaultValue;
     var content = renderNodes(components || children, translation, i18n, reactI18nextOptions, combinedTOpts);
     var useAsParent = parent !== undefined ? parent : reactI18nextOptions.defaultTransParent;
-    return useAsParent ? React__default.createElement(useAsParent, additionalProps, content) : content;
+    return useAsParent ? preact.createElement(useAsParent, additionalProps, content) : content;
   }
 
   function useTranslation(ns) {
     var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     var i18nFromProps = props.i18n;
 
-    var _ref = React.useContext(I18nContext) || {},
+    var _ref = F(I18nContext) || {},
         i18nFromContext = _ref.i18n,
         defaultNSFromContext = _ref.defaultNS;
 
@@ -822,13 +1200,13 @@
       };
     }
 
-    var _useState = React.useState(getT()),
+    var _useState = l(getT()),
         _useState2 = _slicedToArray(_useState, 2),
         t = _useState2[0],
         setT = _useState2[1];
 
-    var isMounted = React.useRef(true);
-    React.useEffect(function () {
+    var isMounted = s(true);
+    y(function () {
       var bindI18n = i18nOptions.bindI18n,
           bindI18nStore = i18nOptions.bindI18nStore;
       isMounted.current = true;
@@ -893,19 +1271,19 @@
           passDownProps.forwardedRef = forwardedRef;
         }
 
-        return React__default.createElement(WrappedComponent, passDownProps);
+        return preact.createElement(WrappedComponent, passDownProps);
       }
 
       I18nextWithTranslation.displayName = "withI18nextTranslation(".concat(getDisplayName(WrappedComponent), ")");
       I18nextWithTranslation.WrappedComponent = WrappedComponent;
 
       var forwardRef = function forwardRef(props, ref) {
-        return React__default.createElement(I18nextWithTranslation, Object.assign({}, props, {
+        return preact.createElement(I18nextWithTranslation, Object.assign({}, props, {
           forwardedRef: ref
         }));
       };
 
-      return options.withRef ? React__default.forwardRef(forwardRef) : I18nextWithTranslation;
+      return options.withRef ? x$1(forwardRef) : I18nextWithTranslation;
     };
   }
 
@@ -930,13 +1308,13 @@
     var i18n = _ref.i18n,
         defaultNS = _ref.defaultNS,
         children = _ref.children;
-    var value = React.useMemo(function () {
+    var value = d(function () {
       return {
         i18n: i18n,
         defaultNS: defaultNS
       };
     }, [i18n, defaultNS]);
-    return React.createElement(I18nContext.Provider, {
+    return preact.createElement(I18nContext.Provider, {
       value: value
     }, children);
   }
@@ -945,7 +1323,7 @@
     var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     var i18nFromProps = props.i18n;
 
-    var _ref = React.useContext(I18nContext) || {},
+    var _ref = F(I18nContext) || {},
         i18nFromContext = _ref.i18n;
 
     var i18n = i18nFromProps || i18nFromContext || getI18n();
@@ -977,7 +1355,7 @@
             rest = _objectWithoutProperties(_ref, ["initialI18nStore", "initialLanguage"]);
 
         useSSR(initialI18nStore, initialLanguage);
-        return React__default.createElement(WrappedComponent, _objectSpread2({}, rest));
+        return preact.createElement(WrappedComponent, _objectSpread2({}, rest));
       }
 
       I18nextWithSSR.getInitialProps = composeInitialProps(WrappedComponent);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'preact';
 import { nodesToString } from '../src/Trans';
 
 describe('trans nodeToString', () => {

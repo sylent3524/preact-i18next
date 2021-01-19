@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'preact';
 import { withSSR } from 'react-i18next';
 
 class ClassComponent extends React.Component {
@@ -33,7 +33,7 @@ const ExtendedFn = withSSR()(FunctionComponent);
 
 <ExtendedFn initialLanguage={'en'} initialI18nStore={{ en: { namespace: { key: 'value' } } }} />;
 
-const FunctionComponentWithProps: React.FunctionComponent<{ foo: string }> = props => {
+const FunctionComponentWithProps: React.FunctionComponent<{ foo: string }> = (props) => {
   return null;
 };
 

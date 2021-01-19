@@ -1,5 +1,5 @@
-import React from 'react';
-import { render } from '@testing-library/react';
+import React from 'preact';
+import { render } from '@testing-library/preact';
 import './i18n';
 import { Trans } from '../src/Trans';
 
@@ -12,7 +12,7 @@ describe('Trans should render nested components', () => {
         i18nKey="testTrans4KeyWithNestedComponent"
         components={[
           <ul>
-            {list.map(item => (
+            {list.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>,
@@ -43,7 +43,7 @@ describe('Trans should render nested components', () => {
       <Trans i18nKey="testTrans5KeyWithNestedComponent">
         My list:
         <ul>
-          {list.map(item => (
+          {list.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>

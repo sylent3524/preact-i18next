@@ -1,4 +1,5 @@
-import * as React from 'react';
+import * as React from 'preact';
+import { Suspense } from 'preact/compat';
 import { useTranslation, Trans, withTranslation, WithTranslation } from 'react-i18next';
 
 // use
@@ -27,7 +28,7 @@ function Page() {
 
   return (
     <div className="App">
-      <React.Suspense fallback={<Loader />}>
+      <Suspense fallback={<Loader />}>
         <div className="App-header">
           <button onClick={() => changeLanguage('de')}>de</button>
           <button onClick={() => changeLanguage('en')}>en</button>
@@ -36,7 +37,7 @@ function Page() {
           <MyComponent />
         </div>
         <div>{t('description.part2')}</div>
-      </React.Suspense>
+      </Suspense>
     </div>
   );
 }
@@ -47,9 +48,9 @@ const Loader = () => <div className="App">Loading...</div>;
 // here app catches the suspense from page in case translations are not yet loaded
 export default function App() {
   return (
-    <React.Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loader />}>
       <Page />
-    </React.Suspense>
+    </Suspense>
   );
 }
 

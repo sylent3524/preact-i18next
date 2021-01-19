@@ -26,9 +26,9 @@ const babelOptions = {
 };
 
 const file = {
-  amd: `dist/amd/react-i18next${compress ? '.min' : ''}.js`,
-  umd: `dist/umd/react-i18next${compress ? '.min' : ''}.js`,
-  iife: `dist/iife/react-i18next${compress ? '.min' : ''}.js`,
+  amd: `dist/amd/preact-i18next${compress ? '.min' : ''}.js`,
+  umd: `dist/umd/preact-i18next${compress ? '.min' : ''}.js`,
+  iife: `dist/iife/preact-i18next${compress ? '.min' : ''}.js`,
 }[format];
 
 export default {
@@ -41,10 +41,10 @@ export default {
     nodeResolve({ jsnext: true, main: true }),
     commonjs({}),
   ].concat(compress ? terser() : []),
-  external: ['react', 'react-dom'],
-  // moduleId: 'react-i18next',
+  external: ['preact', 'react-compat'],
+  // moduleId: 'preact-i18next',
   output: {
-    name: 'ReactI18next',
+    name: 'PreactI18next',
     format,
     file,
   },

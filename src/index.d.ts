@@ -1,5 +1,5 @@
 import i18next, { ReactOptions, i18n, ThirdPartyModule, WithT, TFunction, Resource } from 'i18next';
-import * as React from 'react';
+import * as React from 'preact';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T extends K, K> = Omit<T, keyof K>;
@@ -31,10 +31,12 @@ declare module 'i18next' {
 }
 
 export interface TransProps<E extends Element = HTMLDivElement>
-  extends React.HTMLProps<E>,
+  extends React.JSX.HTMLAttributes<E>,
     Partial<WithT> {
-  children?: React.ReactNode;
-  components?: readonly React.ReactNode[] | { readonly [tagName: string]: React.ReactNode };
+  children?: React.ComponentChildren;
+  components?:
+    | readonly React.ComponentChildren[]
+    | { readonly [tagName: string]: React.ComponentChildren };
   count?: number;
   defaults?: string;
   i18n?: i18n;
@@ -45,7 +47,7 @@ export interface TransProps<E extends Element = HTMLDivElement>
   values?: {};
   t?: TFunction;
 }
-export function Trans<E extends Element = HTMLDivElement>(props: TransProps<E>): React.ReactElement;
+export function Trans<E extends Element = HTMLDivElement>(props: TransProps<E>): React.VNode;
 
 export function useSSR(initialI18nStore: Resource, initialLanguage: string): void;
 
@@ -119,7 +121,7 @@ export interface TranslationProps {
       lng: string;
     },
     ready: boolean,
-  ) => React.ReactNode;
+  ) => React.ComponentChildren;
   ns?: Namespace;
   i18n?: i18n;
 }

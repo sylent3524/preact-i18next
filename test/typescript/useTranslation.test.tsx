@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'preact';
 import { useTranslation } from 'react-i18next';
 
 function defaultObjectUsage() {

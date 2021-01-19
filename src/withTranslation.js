@@ -1,4 +1,5 @@
-import React from 'react';
+import { createElement } from 'preact';
+import { forwardRef as preactForwardRef } from 'preact/compat';
 import { useTranslation } from './useTranslation';
 import { getDisplayName } from './utils';
 
@@ -18,7 +19,7 @@ export function withTranslation(ns, options = {}) {
       } else if (!options.withRef && forwardedRef) {
         passDownProps.forwardedRef = forwardedRef;
       }
-      return React.createElement(WrappedComponent, passDownProps);
+      return createElement(WrappedComponent, passDownProps);
     }
 
     I18nextWithTranslation.displayName = `withI18nextTranslation(${getDisplayName(
@@ -28,8 +29,8 @@ export function withTranslation(ns, options = {}) {
     I18nextWithTranslation.WrappedComponent = WrappedComponent;
 
     const forwardRef = (props, ref) =>
-      React.createElement(I18nextWithTranslation, Object.assign({}, props, { forwardedRef: ref }));
+      createElement(I18nextWithTranslation, Object.assign({}, props, { forwardedRef: ref }));
 
-    return options.withRef ? React.forwardRef(forwardRef) : I18nextWithTranslation;
+    return options.withRef ? preactForwardRef(forwardRef) : I18nextWithTranslation;
   };
 }

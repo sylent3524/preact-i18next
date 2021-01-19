@@ -1,4 +1,6 @@
-import React, { useContext } from 'react';
+import { createElement } from 'preact';
+import { useContext } from 'preact/hooks';
+import { isValidElement, cloneElement } from 'preact/compat';
 import HTML from 'html-parse-stringify2';
 import { getI18n, I18nContext, getDefaults } from './context';
 import { warn, warnOnce } from './utils';
@@ -17,7 +19,7 @@ function getChildren(node) {
 
 function hasValidReactChildren(children) {
   if (Object.prototype.toString.call(children) !== '[object Array]') return false;
-  return children.every(child => React.isValidElement(child));
+  return children.every((child) => isValidElement(child));
 }
 
 function getAsArray(data) {
@@ -45,7 +47,7 @@ export function nodesToString(children, i18nOptions) {
       // actual e.g. lorem
       // expected e.g. lorem
       stringNode += `${child}`;
-    } else if (React.isValidElement(child)) {
+    } else if (isValidElement(child)) {
       const childPropsCount = Object.keys(child.props).length;
       const shouldKeepChild = keepArray.indexOf(child.type) > -1;
       const childChildren = child.props.children;
@@ -115,11 +117,10 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
   function getData(childs) {
     const childrenArray = getAsArray(childs);
 
-    childrenArray.forEach(child => {
+    childrenArray.forEach((child) => {
       if (typeof child === 'string') return;
       if (hasChildren(child)) getData(getChildren(child));
-      else if (typeof child === 'object' && !React.isValidElement(child))
-        Object.assign(data, child);
+      else if (typeof child === 'object' && !isValidElement(child)) Object.assign(data, child);
     });
   }
 
@@ -144,7 +145,7 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
 
   function pushTranslatedJSX(child, inner, mem, i, isVoid) {
     if (child.dummy) child.children = inner; // needed on preact!
-    mem.push(React.cloneElement(child, { ...child.props, key: i }, isVoid ? undefined : inner));
+    mem.push(cloneElement(child, { ...child.props, key: i }, isVoid ? undefined : inner));
   }
 
   // reactNode (the jsx root element or child)
@@ -165,7 +166,7 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
         const child =
           Object.keys(node.attrs).length !== 0 ? mergeProps({ props: node.attrs }, tmp) : tmp;
 
-        const isElement = React.isValidElement(child);
+        const isElement = isValidElement(child);
 
         const isValidTranslationWithChildren =
           isElement && hasChildren(node, true) && !node.voidElement;
@@ -196,14 +197,14 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
             node.children,
             rootReactNode,
           );
-          mem.push(React.cloneElement(child, { ...child.props, key: i }, inner));
+          mem.push(cloneElement(child, { ...child.props, key: i }, inner));
         } else if (Number.isNaN(parseFloat(node.name))) {
           if (isKnownComponent) {
             const inner = renderInner(child, node, rootReactNode);
             pushTranslatedJSX(child, inner, mem, i, node.voidElement);
           } else if (i18nOptions.transSupportBasicHtmlNodes && keepArray.indexOf(node.name) > -1) {
             if (node.voidElement) {
-              mem.push(React.createElement(node.name, { key: `${node.name}-${i}` }));
+              mem.push(createElement(node.name, { key: `${node.name}-${i}` }));
             } else {
               const inner = mapAST(
                 reactNodes /* wrong but we need something */,
@@ -211,7 +212,7 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
                 rootReactNode,
               );
 
-              mem.push(React.createElement(node.name, { key: `${node.name}-${i}` }, inner));
+              mem.push(createElement(node.name, { key: `${node.name}-${i}` }, inner));
             }
           } else if (node.voidElement) {
             mem.push(`<${node.name} />`);
@@ -235,9 +236,9 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
         } else if (node.children.length === 1 && translationContent) {
           // If component does not have children, but translation - has
           // with this in component could be components={[<span class='make-beautiful'/>]} and in translation - 'some text <0>some highlighted message</0>'
-          mem.push(React.cloneElement(child, { ...child.props, key: i }, translationContent));
+          mem.push(cloneElement(child, { ...child.props, key: i }, translationContent));
         } else {
-          mem.push(React.cloneElement(child, { ...child.props, key: i }));
+          mem.push(cloneElement(child, { ...child.props, key: i }));
         }
       } else if (node.type === 'text') {
         mem.push(node.content);
@@ -275,7 +276,7 @@ export function Trans({
     return children;
   }
 
-  const t = tFromProps || i18n.t.bind(i18n) || (k => k);
+  const t = tFromProps || i18n.t.bind(i18n) || ((k) => k);
 
   const reactI18nextOptions = { ...getDefaults(), ...(i18n.options && i18n.options.react) };
 
@@ -315,5 +316,5 @@ export function Trans({
   // and override `defaultTransParent` if is present
   const useAsParent = parent !== undefined ? parent : reactI18nextOptions.defaultTransParent;
 
-  return useAsParent ? React.createElement(useAsParent, additionalProps, content) : content;
+  return useAsParent ? createElement(useAsParent, additionalProps, content) : content;
 }

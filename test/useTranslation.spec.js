@@ -1,9 +1,9 @@
-import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import React from 'preact';
 import i18nInstance from './i18n';
 import { useTranslation } from '../src/useTranslation';
 import { setI18n } from '../src/context';
 import { I18nextProvider } from '../src/I18nextProvider';
+import { renderHook } from '@testing-library/preact-hooks';
 
 jest.unmock('../src/useTranslation');
 jest.unmock('../src/I18nextProvider');

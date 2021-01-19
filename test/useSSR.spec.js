@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/preact-hooks';
 import i18n from './i18n';
 import { setI18n } from '../src/context';
 import { useSSR } from '../src/useSSR';
@@ -21,10 +21,10 @@ describe('useSSR', () => {
       backendConnector: {},
     },
     isInitialized: true,
-    changeLanguage: lng => {
+    changeLanguage: (lng) => {
       mockI18n.language = lng;
     },
-    getFixedT: () => message => message,
+    getFixedT: () => (message) => message,
     hasResourceBundle: (lng, ns) => ns === 'alreadyLoadedNS',
     loadNamespaces: () => {},
   };

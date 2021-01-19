@@ -1,6 +1,6 @@
-import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
-import { render } from '@testing-library/react';
+import React from 'preact';
+import { renderHook } from '@testing-library/preact-hooks';
+import { render } from '@testing-library/preact';
 import { useTranslation } from '../src/useTranslation';
 
 jest.unmock('../src/useTranslation');
@@ -19,7 +19,7 @@ describe('useTranslation', () => {
       },
       isInitialized: true,
       changeLanguage: () => {},
-      getFixedT: () => message => message,
+      getFixedT: () => (message) => message,
       hasResourceBundle: (lng, ns) => ns === 'alreadyLoadedNS',
       loadNamespaces: () => {},
       on: () => {},
