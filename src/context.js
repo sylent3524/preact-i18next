@@ -1,4 +1,5 @@
 import { createContext } from 'preact';
+import { unescape } from './unescape';
 
 let defaultOptions = {
   bindI18n: 'languageChanged',
@@ -6,9 +7,11 @@ let defaultOptions = {
   // nsMode: 'fallback' // loop through all namespaces given to hook, HOC, render prop for key lookup
   transEmptyNodeValue: '',
   transSupportBasicHtmlNodes: true,
+  transWrapTextNodes: '',
   transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'],
   // hashTransKey: key => key // calculate a key for Trans component based on defaultValue
   useSuspense: true,
+  unescape,
 };
 
 let i18nInstance;

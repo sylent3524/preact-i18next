@@ -428,6 +428,23 @@ describe('trans with only content from translation file - no children', () => {
   });
 });
 
+describe('trans with only html content from translation file - no children', () => {
+  const TestComponent = () => <Trans i18nKey="transTest1_customHtml2" />;
+  it('should render translated string', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        <strong>
+          Go
+        </strong>
+         
+        <br />
+         there.
+      </div>
+    `);
+  });
+});
+
 describe('trans should not break on invalid node from translations', () => {
   const TestComponent = () => <Trans i18nKey="testInvalidHtml" />;
   it('should render translated string', () => {
@@ -471,6 +488,245 @@ describe('trans should work with misleading overloaded empty elements in compone
         <strong>
           welcome
         </strong>
+      </div>
+    `);
+  });
+});
+
+describe('trans should work with lowercase elements in components', () => {
+  const TestComponent = () => (
+    <Trans
+      i18nKey="someKeyWithLowercaseComp"
+      defaults="click <whatever>here</whatever> for more"
+      components={{ whatever: <a href="/foo">dummy</a> }}
+    />
+  );
+  it('should render translated string', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        click 
+        <a
+          href="/foo"
+        >
+          here
+        </a>
+         for more
+      </div>
+    `);
+  });
+});
+
+describe('trans should work with uppercase elements in components', () => {
+  const TestComponent = () => (
+    <Trans
+      i18nKey="someKeyWithUppercaseComp"
+      defaults="click <Link>here</Link> for more"
+      components={{ Link: <a href="/foo">dummy</a> }}
+    />
+  );
+  it('should render translated string', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        click 
+        <a
+          href="/foo"
+        >
+          here
+        </a>
+         for more
+      </div>
+    `);
+  });
+});
+
+describe('trans with null child', () => {
+  const TestComponent = () => (
+    <Trans i18nKey="transTest1">
+      Open <Link to="/msgs">here</Link>.{null}
+    </Trans>
+  );
+
+  it('should ignore the null child and render correct content', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Go 
+        <a
+          href="/msgs"
+        >
+          there
+        </a>
+        .
+      </div>
+    `);
+  });
+});
+
+describe('trans with wrapTextNodes', () => {
+  let orgValue;
+  beforeAll(() => {
+    orgValue = i18n.options.react.transWrapTextNodes;
+    i18n.options.react.transWrapTextNodes = 'span';
+  });
+  afterAll(() => {
+    i18n.options.react.transWrapTextNodes = orgValue;
+  });
+
+  const TestComponent = () => (
+    <Trans i18nKey="transTest1">
+      Open <Link to="/msgs">here</Link>.
+    </Trans>
+  );
+
+  it('should wrap text nodes accordingly', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        <span>
+          Go 
+        </span>
+        <a
+          href="/msgs"
+        >
+          <span>
+            there
+          </span>
+        </a>
+        <span>
+          .
+        </span>
+      </div>
+    `);
+  });
+});
+
+describe('trans does ignore user defined values when parsing', () => {
+  const TestComponent = ({ value }) => (
+    <Trans>
+      This is <strong>just</strong> some {{ value }} text
+    </Trans>
+  );
+
+  it('should escape value with angle brackets', () => {
+    const { container } = render(<TestComponent value="<weird>" />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        This is 
+        <strong>
+          just
+        </strong>
+         some &lt;weird&gt; text
+      </div>
+    `);
+  });
+});
+
+describe('trans should allow escaped html', () => {
+  const TestComponent = () => (
+    <Trans i18nKey="transTestEscapedHtml" components={[<Link to="/msgs" />]} shouldUnescape />
+  );
+
+  it('should unescape &lt; &nbsp; &amp; &gt; to < SPACE & >', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Escaped html should unescape correctly 
+        <a
+          href="/msgs"
+        >
+          &lt; &&gt;
+        </a>
+        .
+      </div>
+    `);
+  });
+});
+
+describe('trans with custom unescape', () => {
+  let orgValue;
+  beforeAll(() => {
+    orgValue = i18n.options.react.unescape;
+    i18n.options.react.unescape = (text) => text.replace('&shy;', '\u00AD');
+  });
+
+  afterAll(() => {
+    i18n.options.react.unescape = orgValue;
+  });
+
+  it('should allow unescape override', () => {
+    const TestComponent = () => (
+      <Trans i18nKey="transTestCustomUnescape" components={[<Link to="/msgs" />]} shouldUnescape />
+    );
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Text should be passed through custom unescape 
+        <a
+          href="/msgs"
+        >
+          \u00AD
+        </a>
+      </div>
+    `);
+  });
+});
+
+it('transSupportBasicHtmlNodes: false should not keep the name of simple nodes', () => {
+  const cloneInst = i18n.cloneInstance({
+    react: { transSupportBasicHtmlNodes: false, defaultTransParent: 'div' },
+  });
+
+  const TestComponent = () => (
+    <Trans i18n={cloneInst}>
+      <p>Plain paragraph</p>
+      <p>
+        Paragraph with <em>hack</em>
+      </p>
+      <p className="hack">Paragraph with hack</p>
+    </Trans>
+  );
+
+  const { container } = render(<TestComponent />);
+  expect(container.firstChild).toMatchInlineSnapshot(`
+    <div>
+      <p>
+        Plain paragraph
+      </p>
+      <p>
+        Paragraph with 
+        <em>
+          hack
+        </em>
+      </p>
+      <p
+        class="hack"
+      >
+        Paragraph with hack
+      </p>
+    </div>
+  `);
+});
+
+describe('trans with context property', () => {
+  const TestComponent = ({ parent }) => (
+    <Trans i18nKey="testTransWithCtx" context="home" parent={parent}>
+      Open <Link to="/msgs">here</Link>.
+    </Trans>
+  );
+
+  it('should render correct content', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Go 
+        <a
+          href="/msgs"
+        >
+          home
+        </a>
+        .
       </div>
     `);
   });

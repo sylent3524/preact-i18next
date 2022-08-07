@@ -2,6 +2,14 @@ import { useState, useEffect, useContext, useRef } from 'preact/hooks';
 import { getI18n, getDefaults, ReportNamespaces, I18nContext } from './context';
 import { warnOnce, loadNamespaces, hasLoadedNamespace } from './utils';
 
+const usePrevious = (value, ignore) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = ignore ? ref.current : value;
+  }, [value, ignore]);
+  return ref.current;
+};
+
 export function useTranslation(ns, props = {}) {
   // assert we have the needed i18nInstance
   const { i18n: i18nFromProps } = props;
@@ -18,8 +26,13 @@ export function useTranslation(ns, props = {}) {
     return retNotReady;
   }
 
+  if (i18n.options.react && i18n.options.react.wait !== undefined)
+    warnOnce(
+      'It seems you are still using the old wait option, you may migrate to the new useSuspense behaviour.',
+    );
+
   const i18nOptions = { ...getDefaults(), ...i18n.options.react, ...props };
-  const { useSuspense } = i18nOptions;
+  const { useSuspense, keyPrefix } = i18nOptions;
 
   // prepare having a namespace
   let namespaces = ns || defaultNSFromContext || (i18n.options && i18n.options.defaultNS);
@@ -35,11 +48,16 @@ export function useTranslation(ns, props = {}) {
 
   // binding t function to namespace (acts also as rerender trigger)
   function getT() {
-    return {
-      t: i18n.getFixedT(null, i18nOptions.nsMode === 'fallback' ? namespaces : namespaces[0]),
-    };
+    return i18n.getFixedT(
+      null,
+      i18nOptions.nsMode === 'fallback' ? namespaces : namespaces[0],
+      keyPrefix,
+    );
   }
-  const [t, setT] = useState(getT()); // seems we can't have functions as value -> wrap it in obj
+  const [t, setT] = useState(getT);
+
+  const joinedNS = namespaces.join();
+  const previousJoinedNS = usePrevious(joinedNS);
 
   const isMounted = useRef(true);
   useEffect(() => {
@@ -50,12 +68,16 @@ export function useTranslation(ns, props = {}) {
     // in side effect and do not call resetT if unmounted
     if (!ready && !useSuspense) {
       loadNamespaces(i18n, namespaces, () => {
-        if (isMounted.current) setT(getT());
+        if (isMounted.current) setT(getT);
       });
     }
 
+    if (ready && previousJoinedNS && previousJoinedNS !== joinedNS && isMounted.current) {
+      setT(getT);
+    }
+
     function boundReset() {
-      if (isMounted.current) setT(getT());
+      if (isMounted.current) setT(getT);
     }
 
     // bind events to trigger change, like languageChanged
@@ -69,10 +91,20 @@ export function useTranslation(ns, props = {}) {
       if (bindI18nStore && i18n)
         bindI18nStore.split(' ').forEach((e) => i18n.store.off(e, boundReset));
     };
-  }, [namespaces.join()]); // re-run effect whenever list of namespaces changes
+  }, [i18n, joinedNS]); // re-run effect whenever list of namespaces changes
 
-  const ret = [t.t, i18n, ready];
-  ret.t = t.t;
+  // t is correctly initialized by useState hook. We only need to update it after i18n
+  // instance was replaced (for example in the provider).
+  const isInitial = useRef(true);
+  useEffect(() => {
+    if (isMounted.current && !isInitial.current) {
+      setT(getT);
+    }
+    isInitial.current = false;
+  }, [i18n]); // re-run when i18n instance was replaced
+
+  const ret = [t, i18n, ready];
+  ret.t = t;
   ret.i18n = i18n;
   ret.ready = ready;
 

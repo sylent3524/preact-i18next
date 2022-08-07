@@ -6,7 +6,7 @@ import { getDisplayName } from './utils';
 export function withTranslation(ns, options = {}) {
   return function Extend(WrappedComponent) {
     function I18nextWithTranslation({ forwardedRef, ...rest }) {
-      const [t, i18n, ready] = useTranslation(ns, rest);
+      const [t, i18n, ready] = useTranslation(ns, { ...rest, keyPrefix: options.keyPrefix });
 
       const passDownProps = {
         ...rest,
@@ -31,6 +31,6 @@ export function withTranslation(ns, options = {}) {
     const forwardRef = (props, ref) =>
       createElement(I18nextWithTranslation, Object.assign({}, props, { forwardedRef: ref }));
 
-    return options.withRef ? preactForwardRef(forwardRef) : I18nextWithTranslation;
+    return options.withRef ? forwardRefReact(forwardRef) : I18nextWithTranslation;
   };
 }
