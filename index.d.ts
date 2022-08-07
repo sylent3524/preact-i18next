@@ -38,6 +38,7 @@ export interface TransProps<E extends Element = HTMLDivElement>
     | readonly React.ComponentChildren[]
     | { readonly [tagName: string]: React.ComponentChildren };
   count?: number;
+  context?: string;
   defaults?: string;
   i18n?: i18n;
   i18nKey?: string;
@@ -45,6 +46,7 @@ export interface TransProps<E extends Element = HTMLDivElement>
   parent?: string | React.ComponentType<any> | null; // used in React.createElement if not null
   tOptions?: {};
   values?: {};
+  shouldUnescape?: boolean;
   t?: TFunction;
 }
 export function Trans<E extends Element = HTMLDivElement>(props: TransProps<E>): React.VNode;
@@ -54,6 +56,9 @@ export function useSSR(initialI18nStore: Resource, initialLanguage: string): voi
 export interface UseTranslationOptions {
   i18n?: i18n;
   useSuspense?: boolean;
+  keyPrefix?: string;
+  bindI18n?: string | false;
+  // other of these options might also work: https://github.com/i18next/i18next/blob/master/index.d.ts#L127
 }
 export type UseTranslationResponse = [TFunction, i18n, boolean] & {
   t: TFunction;
@@ -106,6 +111,7 @@ export function withTranslation(
 ) => React.ComponentType<Omit<ResolvedProps, keyof WithTranslation> & WithTranslationProps>;
 
 export interface I18nextProviderProps {
+  children?: React.ComponentChildren;
   i18n: i18n;
   defaultNS?: string;
 }
@@ -124,6 +130,7 @@ export interface TranslationProps {
   ) => React.ComponentChildren;
   ns?: Namespace;
   i18n?: i18n;
+  useSuspense?: boolean;
 }
 
 export function Translation(props: TranslationProps): any;

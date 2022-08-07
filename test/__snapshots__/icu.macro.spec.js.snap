@@ -272,6 +272,29 @@ const x = <Trans i18nKey=\\"testKey\\" defaults=\\"{itemsCount3, plural,  =0 {Th
 
 exports[`macros 17. macros: 17. macros 1`] = `
 "
+import { Plural } from '../icu.macro'
+
+const x = <Plural
+  i18nKey=\\"testKey\\"
+  count={itemsCount3}
+  values={{location: 'table'}}
+  $0={<Trans>There is <strong>no</strong> item on the <i>{location}</i>.</Trans>}
+  one={<Trans>There is <strong>#</strong> item on the <i>{location}</i>.</Trans>}
+  other={<Trans>There are <strong>#</strong> items on the <i>{location}</i>.</Trans>}
+/>
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Trans } from \\"react-i18next\\";
+const x = <Trans i18nKey=\\"testKey\\" defaults=\\"{itemsCount3, plural,  =0 {There is <0>no</0> item on the <1>{location}</1>.} one {There is <2>#</2> item on the <3>{location}</3>.} other {There are <4>#</4> items on the <5>{location}</5>.}}\\" components={[<strong>no</strong>, <i>{location}</i>, <strong>#</strong>, <i>{location}</i>, <strong>#</strong>, <i>{location}</i>]} values={{
+  itemsCount3,
+  location: 'table'
+}} />;
+"
+`;
+
+exports[`macros 18. macros: 18. macros 1`] = `
+"
 import { SelectOrdinal } from '../icu.macro'
 
 const x = <SelectOrdinal
@@ -294,7 +317,7 @@ const x = <Trans defaults=\\"{position, selectordinal,  zero {You are #th in lin
 "
 `;
 
-exports[`macros 18. macros: 18. macros 1`] = `
+exports[`macros 19. macros: 19. macros 1`] = `
 "
 import { SelectOrdinal } from '../icu.macro'
 
@@ -317,7 +340,7 @@ const x = <Trans i18nKey=\\"testKey\\" defaults=\\"{position, selectordinal,  on
 "
 `;
 
-exports[`macros 19. macros: 19. macros 1`] = `
+exports[`macros 20. macros: 20. macros 1`] = `
 "
 import React from 'preact'
 import { useTranslation } from 'react-i18next'
@@ -492,5 +515,75 @@ export default function TestPage({
     }} />
     </>;
 }
+"
+`;
+
+exports[`macros 21. macros: 21. macros 1`] = `
+"
+import React from \\"react\\"
+import { Trans, number, date, time, plural, select, selectOrdinal } from \\"../icu.macro\\";
+
+function Component({ children, style }) {
+  return <div style={style}>{children}</div>
+}
+
+const count = 2;
+const numbers = 34;
+const selectInput = \\"thing\\"
+const now = new Date()
+const x = (
+  <Trans i18nKey=\\"key\\">
+    <strong>exciting!</strong>
+    {plural\`\${count},
+    =0 { hi there \${<strong>friend</strong>} }
+    other { woweee even supports nested \${number\`\${numbers}\`} } \`} and
+    {select\`\${selectInput},
+     thing { another nested \${<Component style={{ color: \\"red\\" }}>
+       with regular text and a date: <pre>{date\`\${now}\`}</pre>
+     </Component>}} \`}
+  </Trans>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Trans, number, date, plural, select } from \\"react-i18next\\";
+import React from \\"react\\";
+
+function Component({
+  children,
+  style
+}) {
+  return <div style={style}>{children}</div>;
+}
+
+const count = 2;
+const numbers = 34;
+const selectInput = \\"thing\\";
+const now = new Date();
+const x = <Trans i18nKey=\\"key\\" defaults=\\"<0>exciting!</0>{count, plural, =0 { hi there <1>friend</1> } other { woweee even supports nested {numbers, number} } } and{selectInput, select, thing { another nested <2>with regular text and a date: <0>{now, date}</0></2>} }\\" components={[<strong>exciting!</strong>, <strong>friend</strong>, <Component style={{
+  color: \\"red\\"
+}}>
+       with regular text and a date: <pre>{date\`\${now}\`}</pre>
+     </Component>]} values={{
+  count,
+  numbers,
+  selectInput,
+  now
+}} />;
+"
+`;
+
+exports[`macros 22. macros: 22. macros 1`] = `
+"
+import { Trans } from \\"../icu.macro\\";
+
+const x = <Trans>Welcome, &quot;{ name }&quot;!</Trans>
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { Trans } from \\"react-i18next\\";
+const x = <Trans defaults={\\"Welcome, \\\\\\"{name}\\\\\\"!\\"} components={[]} values={{
+  name
+}} />;
 "
 `;

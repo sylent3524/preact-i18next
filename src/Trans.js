@@ -1,7 +1,7 @@
 import { createElement } from 'preact';
 import { useContext } from 'preact/hooks';
 import { isValidElement, cloneElement } from 'preact/compat';
-import HTML from 'html-parse-stringify2';
+import HTML from 'html-parse-stringify';
 import { getI18n, I18nContext, getDefaults } from './context';
 import { warn, warnOnce } from './utils';
 
@@ -14,7 +14,7 @@ function hasChildren(node, checkLength) {
 
 function getChildren(node) {
   if (!node) return [];
-  return node && node.children ? node.children : node.props && node.props.children;
+  return node.props ? node.props.children : node.children;
 }
 
 function hasValidReactChildren(children) {
@@ -39,7 +39,10 @@ export function nodesToString(children, i18nOptions) {
 
   // do not use `React.Children.toArray`, will fail at object children
   const childrenArray = getAsArray(children);
-  const keepArray = i18nOptions.transKeepBasicHtmlNodesFor || [];
+  const keepArray =
+    i18nOptions.transSupportBasicHtmlNodes && i18nOptions.transKeepBasicHtmlNodesFor
+      ? i18nOptions.transKeepBasicHtmlNodesFor
+      : [];
 
   // e.g. lorem <br/> ipsum {{ messageCount, format }} dolor <strong>bold</strong> amet
   childrenArray.forEach((child, childIndex) => {
@@ -74,6 +77,8 @@ export function nodesToString(children, i18nOptions) {
         const content = nodesToString(childChildren, i18nOptions);
         stringNode += `<${childIndex}>${content}</${childIndex}>`;
       }
+    } else if (child === null) {
+      warn(`Trans: the passed in value is invalid - seems you passed in a null child.`);
     } else if (typeof child === 'object') {
       // e.g. lorem {{ value, format }} ipsum
       const { format, ...clone } = child;
@@ -100,7 +105,7 @@ export function nodesToString(children, i18nOptions) {
   return stringNode;
 }
 
-function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
+function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts, shouldUnescape) {
   if (targetString === '') return [];
 
   // check if contains tags we need to replace from html string to react nodes
@@ -126,15 +131,10 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
 
   getData(children);
 
-  const interpolatedString = i18n.services.interpolator.interpolate(
-    targetString,
-    { ...data, ...combinedTOpts },
-    i18n.language,
-  );
-
   // parse ast from string with additional wrapper tag
   // -> avoids issues in parser removing prepending text nodes
-  const ast = HTML.parse(`<0>${interpolatedString}</0>`);
+  const ast = HTML.parse(`<0>${targetString}</0>`);
+  const opts = { ...data, ...combinedTOpts };
 
   function renderInner(child, node, rootReactNode) {
     const childs = getChildren(child);
@@ -156,7 +156,12 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
     const astNodes = getAsArray(astNode);
 
     return astNodes.reduce((mem, node, i) => {
-      const translationContent = node.children && node.children[0] && node.children[0].content;
+      const translationContent =
+        node.children &&
+        node.children[0] &&
+        node.children[0].content &&
+        i18n.services.interpolator.interpolate(node.children[0].content, opts, i18n.language);
+
       if (node.type === 'tag') {
         let tmp = reactNodes[parseInt(node.name, 10)]; // regular array (components or children)
         if (!tmp && rootReactNode.length === 1 && rootReactNode[0][node.name])
@@ -181,7 +186,8 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
         // console.warn('CHILD', node.name, node, isElement, child);
 
         if (typeof child === 'string') {
-          mem.push(child);
+          const value = i18n.services.interpolator.interpolate(child, opts, i18n.language);
+          mem.push(value);
         } else if (
           hasChildren(child) || // the jsx element has children -> loop
           isValidTranslationWithChildren // valid jsx element with no children but the translation has -> loop
@@ -241,7 +247,17 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
           mem.push(cloneElement(child, { ...child.props, key: i }));
         }
       } else if (node.type === 'text') {
-        mem.push(node.content);
+        const wrapTextNodes = i18nOptions.transWrapTextNodes;
+        const content = shouldUnescape
+          ? i18nOptions.unescape(
+              i18n.services.interpolator.interpolate(node.content, opts, i18n.language),
+            )
+          : i18n.services.interpolator.interpolate(node.content, opts, i18n.language);
+        if (wrapTextNodes) {
+          mem.push(createElement(wrapTextNodes, { key: `${node.name}-${i}` }, content));
+        } else {
+          mem.push(content);
+        }
       }
       return mem;
     }, []);
@@ -250,7 +266,11 @@ function renderNodes(children, targetString, i18n, i18nOptions, combinedTOpts) {
   // call mapAST with having react nodes nested into additional node like
   // we did for the string ast from translation
   // return the children of that extra node to get expected result
-  const result = mapAST([{ dummy: true, children }], ast, getAsArray(children || []));
+  const result = mapAST(
+    [{ dummy: true, children: children || [] }],
+    ast,
+    getAsArray(children || []),
+  );
   return getChildren(result[0]);
 }
 
@@ -259,6 +279,7 @@ export function Trans({
   count,
   parent,
   i18nKey,
+  context,
   tOptions = {},
   values,
   defaults,
@@ -266,6 +287,7 @@ export function Trans({
   ns,
   i18n: i18nFromProps,
   t: tFromProps,
+  shouldUnescape,
   ...additionalProps
 }) {
   const { i18n: i18nFromContext, defaultNS: defaultNSFromContext } = useContext(I18nContext) || {};
@@ -277,6 +299,8 @@ export function Trans({
   }
 
   const t = tFromProps || i18n.t.bind(i18n) || ((k) => k);
+
+  if (context) tOptions.context = context;
 
   const reactI18nextOptions = { ...getDefaults(), ...(i18n.options && i18n.options.react) };
 
@@ -310,6 +334,7 @@ export function Trans({
     i18n,
     reactI18nextOptions,
     combinedTOpts,
+    shouldUnescape,
   );
 
   // allows user to pass `null` to `parent`

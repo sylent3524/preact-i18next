@@ -8,6 +8,7 @@ npm-debug.log.*
 *.dat
 .idea
 .vscode
+.eslintcache
 
 # Ignore various temporary files
 *~
@@ -21,6 +22,8 @@ coverage/**/*
 example/build/**/*
 dist/**/*
 .next
-package-lock.json
 yarn.lock
 out
+
+# ignore packaged releases
+*.tgz
